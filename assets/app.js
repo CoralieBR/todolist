@@ -1,4 +1,4 @@
-import './bootstrap.js';
+// import './bootstrap.js';
 import './js/bootstrap.min';
 import './js/bootstrap.js';
 /*
