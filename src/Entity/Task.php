@@ -28,10 +28,13 @@ class Task
     #[ORM\Column]
     private bool $isDone;
 
-    public function __construct()
+    public function __construct(string $title = null, string $content = null)
     {
         $this->createdAt = new \Datetime();
         $this->isDone = false;
+
+        $this->title = $title;
+        $this->content = $content;
     }
 
     public function getId()
@@ -42,11 +45,6 @@ class Task
     public function getCreatedAt()
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
     }
 
     public function getTitle()
