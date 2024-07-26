@@ -17,7 +17,14 @@ class TestFixtures extends Fixture
         );
         $manager->persist($task);
 
-        // $user = new User();
+        $task2 = new Task(
+            'Un second titre de tache',
+            'Un contenu tout aussi explicite que pour la première tâche.'
+        );
+        $task2->toggle(true);
+        $manager->persist($task2);
+
+        // $user = new User(); 
 
         $manager->flush();
     }
