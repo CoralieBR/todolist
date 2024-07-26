@@ -19,15 +19,9 @@ class DefaultControllerTest extends WebTestCase
 
     public function testHomepageIsUp()
     {
-        // $userRepository = $this->client->getContainer()->get('doctrine.orm.entity_manager')->getRepository(User::class);
-        // $testUser = $userRepository->findOneByEmail('...');
-
         $urlGenerator = $this->client->getContainer()->get('router.default');
-        // $this->client->loginUser($testUser);
 
         $this->client->request(Request::METHOD_GET, $urlGenerator->generate('homepage'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
-    
 }

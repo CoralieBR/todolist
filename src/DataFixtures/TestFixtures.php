@@ -24,7 +24,11 @@ class TestFixtures extends Fixture
         $task2->toggle(true);
         $manager->persist($task2);
 
-        // $user = new User(); 
+        $user = new User();
+        $user->setUsername('Burtin');
+        $user->setPassword('pass');
+        $user->setEmail('burtin@mail.com');
+        $manager->persist($user);
 
         $manager->flush();
     }
