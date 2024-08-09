@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Form\TaskType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\{CurrentUser, IsGranted};
 
 class TaskController extends AbstractController
 {
@@ -18,7 +20,12 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/create', name: 'task_create')]
-    public function createAction(Request $request, EntityManagerInterface $em)
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function createAction(
+        Request $request,
+        EntityManagerInterface $em,
+        #[CurrentUser] User $user
+    )
     {
         $task = new Task('', '');
         $form = $this->createForm(TaskType::class, $task);
@@ -26,6 +33,7 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $task->setUser($user);
             $em->persist($task);
             $em->flush();
 
@@ -38,6 +46,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
+    #[IsGranted('edit', 'task')]
     public function editAction(Task $task, Request $request, EntityManagerInterface $em)
     {
         $form = $this->createForm(TaskType::class, $task);
@@ -70,6 +79,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
+    #[IsGranted('edit', 'task')]
     public function deleteTaskAction(Task $task, EntityManagerInterface $em)
     {
         $em->remove($task);

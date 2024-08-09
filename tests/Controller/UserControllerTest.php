@@ -2,14 +2,19 @@
 
 namespace App\Tests\Controller;
 
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UserControllerTest extends WebTestCase
 {
     public function testCreateUser(): void
     {
-        $client = static::createClient();    
-        $crawler = $client->request('GET', '/users/create');
+        $client = static::createClient();
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('admin@mail.com');
+        $client->loginUser($testUser);
+
+        $crawler = $client->request('GET', '/admin/users/create');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('button', 'Ajouter');
@@ -18,7 +23,7 @@ class UserControllerTest extends WebTestCase
         $form = $buttonCrawlerNode->form();
 
         $client->submit($form, [
-            'user[username]' => 'Coralie',
+            'user[name]' => 'Coralie',
             'user[password][first]' => 'mot-de-passe',
             'user[password][second]' => 'mot-de-passe',
             'user[email]' => 'coralie@mail.com',
@@ -32,7 +37,11 @@ class UserControllerTest extends WebTestCase
     public function testUpdateUser(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/users');
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('admin@mail.com');
+        $client->loginUser($testUser);
+
+        $crawler = $client->request('GET', '/admin/users');
 
         $this->assertAnySelectorTextContains('a', 'Edit');
         $crawler = $client->clickLink('Edit');
@@ -43,7 +52,7 @@ class UserControllerTest extends WebTestCase
         $form = $buttonCrawlerNode->form();
 
         $client->submit($form, [
-            'user[username]' => 'Coralie',
+            'user[name]' => 'Coralie',
             'user[password][first]' => 'mot-de-passe',
             'user[password][second]' => 'mot-de-passe',
             'user[email]' => 'coralie@mail.com',

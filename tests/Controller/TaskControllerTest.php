@@ -2,13 +2,18 @@
 
 namespace App\Tests\Controller;
 
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskControllerTest extends WebTestCase
 {
     public function testCreateTask(): void
     {
-        $client = static::createClient();    
+        $client = static::createClient();
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('admin@mail.com');
+        $client->loginUser($testUser);
+
         $crawler = $client->request('GET', '/tasks/create');
 
         $this->assertResponseIsSuccessful();
@@ -30,10 +35,13 @@ class TaskControllerTest extends WebTestCase
     public function testUpdateTask(): void
     {
         $client = static::createClient();
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('admin@mail.com');
+        $client->loginUser($testUser);
+
         $crawler = $client->request('GET', '/tasks');
 
-        $this->assertAnySelectorTextContains('a', 'Un titre de tache');
-        $crawler = $client->clickLink('Un titre de tache');
+        $crawler = $client->clickLink('Modifier');
 
         $this->assertResponseIsSuccessful();
 
@@ -54,10 +62,12 @@ class TaskControllerTest extends WebTestCase
     public function testDeleteTask(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/tasks');
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('admin@mail.com');
+        $client->loginUser($testUser);
 
-        $buttonCrawlerNode = $crawler->selectButton('Supprimer');
-        $client->submit($buttonCrawlerNode->form());
+        $crawler = $client->request('GET', '/tasks');
+        $crawler = $client->clickLink('Supprimer');
         $crawler = $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
@@ -67,32 +77,32 @@ class TaskControllerTest extends WebTestCase
     public function testToggleTaskDone(): void
     {
         $client = static::createClient();
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('admin@mail.com');
+        $client->loginUser($testUser);
+
         $crawler = $client->request('GET', '/tasks');
-
-        $this->assertAnySelectorTextContains('button', 'Marquer comme faite');
-
-        $buttonCrawlerNode = $crawler->selectButton('Marquer comme faite');
-        $client->submit($buttonCrawlerNode->form());
+        $crawler = $client->clickLink('Marquer comme faite');
         $crawler = $client->followRedirect();
 
-        $this->assertAnySelectorTextContains('button', 'Marquer non terminée');
         $this->assertResponseIsSuccessful();
+        $this->assertAnySelectorTextContains('a', 'Marquer non terminée');
         $this->assertSelectorTextContains('.alert.alert-success', 'La tâche Un titre de tache a bien été marquée comme faite.');
     }
 
     public function testToggleTaskNotDone(): void
     {
         $client = static::createClient();
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('admin@mail.com');
+        $client->loginUser($testUser);
+
         $crawler = $client->request('GET', '/tasks');
-
-        $this->assertAnySelectorTextContains('button', 'Marquer non terminée');
-
-        $buttonCrawlerNode = $crawler->selectButton('Marquer non terminée');
-        $client->submit($buttonCrawlerNode->form());
+        $crawler = $client->clickLink('Marquer non terminée');
         $crawler = $client->followRedirect();
 
-        $this->assertAnySelectorTextContains('button', 'Marquer comme faite');
         $this->assertResponseIsSuccessful();
+        $this->assertAnySelectorTextContains('a', 'Marquer comme faite');
         $this->assertSelectorTextContains('.alert.alert-success', 'La tâche Un second titre de tache a bien été marquée comme faite.');
     }
 }

@@ -11,8 +11,8 @@ class UserTest extends TestCase
     {
         $user = new User();
 
-        $user->setUsername('Prénom');
-        $this->assertSame('Prénom', $user->getUsername());
+        $user->setName('Prénom');
+        $this->assertSame('Prénom', $user->getName());
 
         $user->setEmail('email');
         $this->assertSame('email', $user->getEmail());
