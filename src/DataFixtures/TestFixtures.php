@@ -8,7 +8,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class TestFixtures extends Fixture
 {
-    public const ADMIN_USER_REFERENCE = 'admin-user';
+    public const OWNER_USER_REFERENCE = 'owner-user';
 
     public function load(ObjectManager $manager): void
     {
@@ -25,13 +25,20 @@ class TestFixtures extends Fixture
         $user2->setEmail('admin@mail.com');
         $user2->setRoles(['ROLE_ADMIN']);
         $manager->persist($user2);
-        $this->addReference(self::ADMIN_USER_REFERENCE, $user2);
+
+        $user3 = new User();
+        $user3->setName('Owner');
+        $user3->setPassword('pass');
+        $user3->setEmail('owner@mail.com');
+        $user3->setRoles(['ROLE_USER']);
+        $manager->persist($user3);
+        $this->addReference(self::OWNER_USER_REFERENCE, $user3);
 
         $task = new Task(
             'Un titre de tache',
             'Un contenu de tâche qui décrit parfaitement ce qu\'il faut faire'
         );
-        $task->setUser($this->getReference(self::ADMIN_USER_REFERENCE));
+        $task->setUser($this->getReference(self::OWNER_USER_REFERENCE));
         $manager->persist($task);
 
         $task2 = new Task(
@@ -39,7 +46,7 @@ class TestFixtures extends Fixture
             'Un contenu tout aussi explicite que pour la première tâche.'
         );
         $task2->toggle(true);
-        $task2->setUser($this->getReference(self::ADMIN_USER_REFERENCE));
+        $task2->setUser($this->getReference(self::OWNER_USER_REFERENCE));
         $manager->persist($task2);
 
         $manager->flush();

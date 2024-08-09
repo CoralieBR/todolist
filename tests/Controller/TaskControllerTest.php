@@ -59,17 +59,51 @@ class TaskControllerTest extends WebTestCase
         $this->assertAnySelectorTextContains('h4', 'Titre modifié');
     }
 
-    public function testDeleteTask(): void
+    public function testUserCannotDeleteAnonymous(): void
     {
         $client = static::createClient();
+        $client->request('GET', '/tasks');
+        $this->assertAnySelectorTextNotContains('a', 'Supprimer');
+    }
+    
+    public function testAdminCanDeleteAnonymous(): void
+    {
+        $client = static::createClient();
+
         $userRepository = static::getContainer()->get(UserRepository::class);
         $testUser = $userRepository->findOneByEmail('admin@mail.com');
         $client->loginUser($testUser);
 
-        $crawler = $client->request('GET', '/tasks');
-        $crawler = $client->clickLink('Supprimer');
-        $crawler = $client->followRedirect();
+        $client->request('GET', '/tasks');
+        $client->clickLink('Supprimer');
+        $client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.alert.alert-success', 'La tâche a bien été supprimée.');
+    }
+    
+    public function testUserCannotDeleteTask(): void
+    {
+        $client = static::createClient();
 
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('user@mail.com');
+        $client->loginUser($testUser);
+
+        $client->request('GET', '/tasks');
+        $this->assertAnySelectorTextNotContains('a', 'Supprimer');
+    }
+    
+    public function testOwnerCanDeleteTask(): void
+    {
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('owner@mail.com');
+        $client->loginUser($testUser);
+
+        $client->request('GET', '/tasks');
+        $client->clickLink('Supprimer');
+        $client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('.alert.alert-success', 'La tâche a bien été supprimée.');
     }
@@ -81,9 +115,9 @@ class TaskControllerTest extends WebTestCase
         $testUser = $userRepository->findOneByEmail('admin@mail.com');
         $client->loginUser($testUser);
 
-        $crawler = $client->request('GET', '/tasks');
-        $crawler = $client->clickLink('Marquer comme faite');
-        $crawler = $client->followRedirect();
+        $client->request('GET', '/tasks');
+        $client->clickLink('Marquer comme faite');
+        $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
         $this->assertAnySelectorTextContains('a', 'Marquer non terminée');
@@ -97,9 +131,9 @@ class TaskControllerTest extends WebTestCase
         $testUser = $userRepository->findOneByEmail('admin@mail.com');
         $client->loginUser($testUser);
 
-        $crawler = $client->request('GET', '/tasks');
-        $crawler = $client->clickLink('Marquer non terminée');
-        $crawler = $client->followRedirect();
+        $client->request('GET', '/tasks');
+        $client->clickLink('Marquer non terminée');
+        $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
         $this->assertAnySelectorTextContains('a', 'Marquer comme faite');
