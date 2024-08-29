@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class LoginControllerTest extends WebTestCase
@@ -48,5 +49,17 @@ class LoginControllerTest extends WebTestCase
         self::assertSelectorNotExists('.alert-danger');
         $client->followRedirect();
         self::assertResponseIsSuccessful();
+    }
+
+    public function logout(): void
+    {
+        $client = static::createClient();
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('user@mail.com');
+        $client->loginUser($testUser);
+
+        $client->request('GET', '/deconnexion');
+        $client->followRedirect();
+        $this->assertResponseIsSuccessful();
     }
 }

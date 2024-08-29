@@ -135,7 +135,7 @@ include Setup of env, IDE and typical getting started instructions?
 <!-- TODO
 Updating, improving and correcting the documentation
 
--->
+--> yes pour l'authentification
 
 ## Styleguides
 ### Commit Messages
