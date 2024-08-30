@@ -12,26 +12,9 @@ class TestFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $user1 = new User();
-        $user1->setName('User');
-        $user1->setPassword('pass');
-        $user1->setEmail('user@mail.com');
-        $user1->setRoles(['ROLE_USER']);
-        $manager->persist($user1);
-
-        $user2 = new User();
-        $user2->setName('Admin');
-        $user2->setPassword('pass');
-        $user2->setEmail('admin@mail.com');
-        $user2->setRoles(['ROLE_ADMIN']);
-        $manager->persist($user2);
-
-        $user3 = new User();
-        $user3->setName('Owner');
-        $user3->setPassword('pass');
-        $user3->setEmail('owner@mail.com');
-        $user3->setRoles(['ROLE_USER']);
-        $manager->persist($user3);
+        $this->createUser($manager, 'User', 'user@mail.com', ['ROLE_USER']);
+        $this->createUser($manager, 'Admin', 'admin@mail.com', ['ROLE_ADMIN']);
+        $user3 = $this->createUser($manager, 'Owner', 'owner@mail.com', ['ROLE_USER']);
         $this->addReference(self::OWNER_USER_REFERENCE, $user3);
 
         $task = new Task(
@@ -50,5 +33,17 @@ class TestFixtures extends Fixture
         $manager->persist($task2);
 
         $manager->flush();
+    }
+
+    public function createUser(ObjectManager $manager, string $name, string $email, array $role): User
+    {
+        $user = new User();
+        $user->setName($name);
+        $user->setPassword('pass');
+        $user->setEmail($email);
+        $user->setRoles($role);
+        $manager->persist($user);
+
+        return $user;
     }
 }
