@@ -126,25 +126,14 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/Corali
 <!-- You might want to create an issue template for enhancement suggestions that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
 
 ### Your First Code Contribution
-<!-- TODO
-include Setup of env, IDE and typical getting started instructions?
+To start on the project, after a git clone, you must setup the project: run `npm i` and `composer i` to install everything you need.
+You can run `symfony server:start` to start the symfony server.
+Use `npm run watch` to compile the css and js.
 
--->
-
-### Improving The Documentation
-<!-- TODO
-Updating, improving and correcting the documentation
-
---> yes pour l'authentification
 
 ## Styleguides
 ### Commit Messages
-<!-- TODO
-
--->
-
-## Join The Project Team
-<!-- TODO -->
+Describe the content of your commit in the message with a few words.
 
 <!-- omit in toc -->
 ## Attribution
