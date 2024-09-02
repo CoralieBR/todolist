@@ -23,5 +23,5 @@ yarn-error.log
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
-/public/test-coverage/
+# /public/test-coverage/
 ###< symfony/phpunit-bridge ###
