@@ -10,13 +10,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class TaskVoter extends Voter
 {
     public const EDIT = 'edit';
-    public const VIEW = 'view';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::VIEW])
+        return in_array($attribute, [self::EDIT])
             && $subject instanceof \App\Entity\Task;
     }
 
@@ -33,17 +30,6 @@ class TaskVoter extends Voter
             return true;
         }
 
-        // ... (check conditions and return true to grant permission) ...
-        switch ($attribute) {
-            case self::EDIT:
-                return $subject->getUser() === $user;
-
-            case self::VIEW:
-                // logic to determine if the user can VIEW
-                // return true or false
-                break;
-        }
-
-        return false;
+        return $subject->getUser() === $user;
     }
 }

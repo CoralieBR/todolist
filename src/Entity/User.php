@@ -50,6 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->setRoles([self::ROLE_USER]);
     }
 
     public function getId(): int
