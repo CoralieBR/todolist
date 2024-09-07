@@ -135,6 +135,13 @@ Use `npm run watch` to compile the css and js.
 ### Commit Messages
 Describe the content of your commit in the message with a few words.
 
+## Join The Project Team
+For code quality you must use PHP-cs-fixer, and follow the rules of PSR-12.
+
+## Test
+When you add some code, you must be sure to have it covered by tests. 
+Use phpunit with the command `php bin/phpunit --coverage-html public/test-coverage` to start the tests and generate test coverage document.
+
 <!-- omit in toc -->
 ## Attribution
 This guide is based on the **contributing-gen**. [Make your own](https://github.com/bttger/contributing-gen)!
