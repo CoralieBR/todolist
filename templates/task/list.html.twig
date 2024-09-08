@@ -26,7 +26,7 @@
                     </div>
                     <div>
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <a href="{{ path('task_toggle', {'id' : task.id }) }}">
+                            <a class="btn btn-info btn-sm" href="{{ path('task_toggle', {'id' : task.id }) }}">
                                 {% if not task.isDone %}
                                     Marquer comme faite
                                 {% else %}
@@ -35,10 +35,10 @@
                             </a>
                         {% endif %}
                         {% if is_granted('edit', task) %}
-                            <a href="{{ path('task_delete', {'id' : task.id }) }}">Supprimer</a>
+                            <a class="btn btn-danger btn-sm" href="{{ path('task_delete', {'id' : task.id }) }}">Supprimer</a>
                         {% endif %}
                         {% if is_granted('edit', task) %}
-                            <a href="{{ path('task_edit', {'id' : task.id }) }}">Modifier</a>
+                            <a class="btn btn-warning btn-sm" href="{{ path('task_edit', {'id' : task.id }) }}">Modifier</a>
                         {% endif %}
                     </div>
                 </div>
