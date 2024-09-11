@@ -9,5 +9,7 @@ To set up your project, first you need to clone it.
 -> npm run watch
 
 Then you modify the database in .env.local
+
 -> symfony console doctrine:database:create
+
 -> symfony console doctrine:schema:update
