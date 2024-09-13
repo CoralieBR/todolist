@@ -8,15 +8,19 @@ use App\Form\TaskType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\{CurrentUser, IsGranted};
 
 class TaskController extends AbstractController
 {
     #[Route('/tasks', name: 'task_list')]
-    public function listAction(EntityManagerInterface $em)
+    public function listAction(
+        EntityManagerInterface $em,
+        #[MapQueryParameter()] bool $isDone = false
+    )
     {
-        return $this->render('task/list.html.twig', ['tasks' => $em->getRepository(Task::class)->findAll()]);
+        return $this->render('task/list.html.twig', ['tasks' => $em->getRepository(Task::class)->findBy(['isDone' => $isDone])]);
     }
 
     #[Route('/tasks/create', name: 'task_create')]
